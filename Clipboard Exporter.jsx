@@ -1,3 +1,5 @@
+// @photoshop-jsx
+// This script is intended for use with Adobe Photoshop.
 // Photoshop JSX 部分
 function exportAndCopyToClipboard() {
     try {
