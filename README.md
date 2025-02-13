@@ -15,4 +15,8 @@ ps默认不支持剪切板输入或者输出透明像素,这是一个结合paste
 ## Clipbard lmporter
 利用paste into file使用JSX脚本将调用`"C:\Program Files (x86)\PasteIntoFile\PasteIntoFile.exe" -f "%temp%\WebPasteboardata.png" --overwrite`将剪贴板的数据保存到”%temp%\WebPasteboardata.png”，然后再使用jSX脚本将该图片置入到当前的PSD文件当中
 
+## 已知bug
+当ps目录中有PSUserConfig.txt时，不管有没有内容，脚本都不起作用，具体表现为不能执行脚本中调用外部程序的代码段
+
+
 
