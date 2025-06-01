@@ -8,9 +8,11 @@ ps默认不支持剪切板输入或者输出透明像素,这是一个结合paste
 ![Animation](https://github.com/user-attachments/assets/b40093e7-c2c1-4366-b908-6bd74d366ecf)
 
 ## Clipboard Exporter
-支持notion,支持微信,支持paste into file,
-该jsx将当前画布导出为%temp%\ PsClipboardata.png,并拉取powershell运行cmd指令:
-`"C:\\Program Files (x86)\\PasteIntoFile\\PasteIntoFile.exe" copy "%TEMP%\PsClipboardata.png"`
+支持notion,支持微信,支持paste into file
+
+2025/6更新:通过脚本将当前画布内容输出到%temp%PasteIntoFile/文件夹,并用PsClipboardata+当前时间命名
+格式参考"C:\WINDOWS\TEMP\PsClipboardata_20250602_030317.png"
+经过该更新可以支持ditto直接管理剪切板数据
 
 ## Clipbard lmporter
 利用paste into file使用JSX脚本将调用`"C:\Program Files (x86)\PasteIntoFile\PasteIntoFile.exe" -f "%temp%\WebPasteboardata.png" --overwrite`将剪贴板的数据保存到”%temp%\WebPasteboardata.png”，然后再使用jSX脚本将该图片置入到当前的PSD文件当中

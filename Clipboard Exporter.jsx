@@ -1,60 +1,33 @@
 // Photoshop JSX 部分
 function exportAndCopyToClipboard() {
     try {
-        // 检查并删除已存在的临时文件
-        var tempPath = Folder.temp + "/PsClipboardata.png";
-        var existingFile = new File(tempPath);
-        
-        // 如果文件存在，尝试删除
-        if (existingFile.exists) {
-            try {
-                existingFile.remove();
-                // 等待文件被删除
-                var deleteCheckInterval = 100;
-                var deleteMaxAttempts = 20;
-                var deleteAttempts = 0;
-                
-                while (File(tempPath).exists && deleteAttempts < deleteMaxAttempts) {
-                    $.sleep(deleteCheckInterval);
-                    deleteAttempts++;
-                }
-                
-                // 如果文件仍然存在，尝试结束进程后再删除
-                if (File(tempPath).exists) {
-                    // 结束 PasteIntoFile.exe 进程
-                    var killCommand = 'cmd /c taskkill /F /IM PasteIntoFile.exe';
-                    app.system(killCommand);
-                    
-                    // 等待进程结束
-                    $.sleep(500);
-                    
-                    // 再次尝试删除文件
-                    try {
-                        existingFile.remove();
-                        if (File(tempPath).exists) {
-                            alert("即使结束进程后仍无法删除临时文件");
-                            return;
-                        }
-                    } catch(e) {
-                        alert("结束进程后仍无法删除临时文件: " + e);
-                        return;
-                    }
-                }
-            } catch(e) {
-                alert("删除已存在的临时文件失败: " + e);
-                return;
-            }
-        }
-
         // 获取当前文档
         var doc = app.activeDocument; // 确保获取当前活动文档
         if (!doc) {
             throw new Error("没有打开的文档。");
         }
 
-        // 准备临时保存路径
-        var tempPath = Folder.temp + "/PsClipboardata.png";
+        // 获取当前日期时间并格式化
+        var now = new Date();
+        var dateStr = now.getFullYear().toString() +
+                    ("0" + (now.getMonth() + 1)).slice(-2) +
+                    ("0" + now.getDate()).slice(-2) + "_" +
+                    ("0" + now.getHours()).slice(-2) +
+                    ("0" + now.getMinutes()).slice(-2) +
+                    ("0" + now.getSeconds()).slice(-2);
+
+        // 准备文件名和临时保存路径
+        var fileName = "PsClipboardata_" + dateStr + ".png";
+        var tempFolder = new Folder(Folder.temp + "/PasteIntoFile/");
+
+        // 确保目标文件夹存在
+        if (!tempFolder.exists) {
+            tempFolder.create();
+        }
         
+        var tempPath = Folder.temp + "/PasteIntoFile/" + fileName;
+
+
         // 导出文件
         var pngOptions = new ExportOptionsSaveForWeb(); // 确保定义 PNG 导出选项
         pngOptions.format = SaveDocumentType.PNG; // 设置格式
@@ -75,7 +48,7 @@ function exportAndCopyToClipboard() {
         // 检查文件是否存在
         if (File(tempPath).exists) {
             // 准备 PowerShell 命令，隐藏窗口
-            var pasteCommand = 'cmd /c start /min powershell -WindowStyle Hidden -Command "& {Start-Process \\"C:\\Program Files (x86)\\PasteIntoFile\\PasteIntoFile.exe\\" -ArgumentList \\"copy %TEMP%\\PsClipboardata.png\\"}"';
+            var pasteCommand = 'powershell.exe -Command "& {Start-Process \\"C:\\Program Files (x86)\\PasteIntoFile\\PasteIntoFile.exe\\" -ArgumentList \\"copy %TEMP%\\PasteIntoFile\\' + fileName + '\\"}"';
             // 执行 PowerShell 命令
             app.system(pasteCommand);
             
@@ -83,7 +56,6 @@ function exportAndCopyToClipboard() {
             alert("文件未成功保存，请检查。");
         }
 
-        // ... existing code ...
     } catch(e) {
         alert("发生错误：" + e);
     }
